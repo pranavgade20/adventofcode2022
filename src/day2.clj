@@ -55,7 +55,6 @@
     0)
   )
 
-(prn (map (fn [inp] (list (shape-score1 (second inp)) (match-score2 (second inp)))) input))
 (prn (str "Part 1: " (reduce + (map (fn [inp] (+ (shape-score1 (second inp)) (match-score1 (first inp) (second inp)))) input))))
 (prn (str "Part 2: " (reduce + (map (fn [inp] (+ (shape-score2 (first inp) (second inp)) (match-score2 (second inp)))) input))))
 
