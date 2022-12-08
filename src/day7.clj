@@ -40,12 +40,29 @@
 
 (def tree (second (parse-tree input 2)))
 
-(defn traverse-tree
+(defn traverse-tree-1
   "traverse the tree"
   [root]
   (if (not (map? root))
     [0, root]
-    (let [mapped (map #(traverse-tree %) (vals root)), cnt (apply + (map #(first %) mapped)), sz (apply + (map #(second %) mapped))] [(+ (if (> sz 100000) 0 sz) cnt), sz])))
+    (let [mapped (map #(traverse-tree-1 %) (vals root)), cnt (apply + (map #(first %) mapped)), sz (apply + (map #(second %) mapped))] [(+ (if (> sz 100000) 0 sz) cnt), sz])))
+(prn (str "Part 1: " (first (traverse-tree-1 tree))))
+(defn root-size
+  "traverse the tree, get root size"
+  [root]
+  (if (not (map? root))
+    root
+    (let [mapped (map #(root-size %) (vals root)), sz (apply + mapped)] sz)))
 
-(prn (str "Part 1: " (first (traverse-tree tree))))
-;(prn (traverse-tree tree))
+(def required-space (- (root-size tree) 40000000))
+(defn traverse-tree-2
+  "traverse the tree"
+  [root]
+  (if (not (map? root))
+    [0, root]
+    (let [mapped (map #(traverse-tree-2 %) (vals root)), cnt (apply vector (map #(first %) mapped)), sz (apply + (map #(second %) mapped))] [[cnt, sz], sz])))
+(defn flatten-tree [x]
+  (filter (complement sequential?)
+          (rest (tree-seq sequential? seq x))))
+(prn (str "Part 2: " (reduce min (filter #(< required-space %) (flatten-tree (first (traverse-tree-2 tree)))))))
+
